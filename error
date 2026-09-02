@@ -1,0 +1,50 @@
+2026-09-01T06:43:51.454427232Z #12 [stage-1 4/6] RUN pip install --no-cache-dir -r requirements.txt
+2026-09-01T06:43:51.605117085Z #12 ...
+2026-09-01T06:43:51.605131149Z 
+2026-09-01T06:43:51.605134147Z #17 [frontend-build 6/6] RUN yarn build
+2026-09-01T06:43:51.686447466Z #17 0.232 yarn run v1.22.22
+2026-09-01T06:43:51.856465102Z #17 0.248 $ tsc -b && vite build
+2026-09-01T06:43:52.428965006Z #17 0.974 src/App.tsx(5,8): error TS6133: 'ApiKeysDialog' is declared but its value is never read.
+2026-09-01T06:43:52.428976731Z #17 0.974 src/App.tsx(430,9): error TS6133: 'displayPhone' is declared but its value is never read.
+2026-09-01T06:43:52.428978461Z #17 0.974 src/App.tsx(431,9): error TS6133: 'displayAge' is declared but its value is never read.
+2026-09-01T06:43:52.428980404Z #17 0.974 src/components/dashboard/InstrumentTable.tsx(184,21): error TS6133: 'limitedRange' is declared but its value is never read.
+2026-09-01T06:43:52.428981934Z #17 0.974 src/pages/Dashboard.tsx(3,34): error TS6133: 'Home' is declared but its value is never read.
+2026-09-01T06:43:52.428983409Z #17 0.974 src/pages/Dashboard.tsx(3,48): error TS6133: 'Radar' is declared but its value is never read.
+2026-09-01T06:43:52.428985116Z #17 0.974 src/pages/Dashboard.tsx(3,55): error TS6133: 'Radio' is declared but its value is never read.
+2026-09-01T06:43:52.428986483Z #17 0.974 src/pages/Dashboard.tsx(3,62): error TS6133: 'TrendingDown' is declared but its value is never read.
+2026-09-01T06:43:52.42898776Z #17 0.974 src/pages/Dashboard.tsx(4,8): error TS6133: 'ApiKeysDialog' is declared but its value is never read.
+2026-09-01T06:43:52.428989091Z #17 0.974 src/pages/Dashboard.tsx(7,10): error TS6133: 'buttonVariants' is declared but its value is never read.
+2026-09-01T06:43:52.42899046Z #17 0.974 src/pages/Dashboard.tsx(54,10): error TS6133: 'clock' is declared but its value is never read.
+2026-09-01T06:43:52.655446963Z #17 1.004 error Command failed with exit code 1.
+2026-09-01T06:43:52.655463267Z #17 1.004 info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+2026-09-01T06:43:52.655465051Z #17 ERROR: process "/bin/sh -c yarn build" did not complete successfully: exit code: 1
+2026-09-01T06:43:52.655466587Z 
+2026-09-01T06:43:52.655468389Z #12 [stage-1 4/6] RUN pip install --no-cache-dir -r requirements.txt
+2026-09-01T06:43:56.417776319Z #12 23.12 Successfully installed aiohappyeyeballs-2.7.1 aiohttp-3.14.3 aiosignal-1.4.0 annotated-doc-0.0.5 annotated-types-0.8.0 anyio-4.14.2 ast-serialize-0.8.0 attrs-26.1.0 bcrypt-4.0.1 bidict-0.24.1 black-26.5.1 boto3-1.43.85 botocore-1.43.85 certifi-2026.7.22 cffi-2.1.1 charset_normalizer-3.5.1 click-8.5.0 cryptography-50.0.1 dnspython-2.8.0 ecdsa-0.19.2 email-validator-2.3.0 execnet-2.1.2 fastapi-0.115.12 flake8-7.3.0 frozenlist-1.8.0 h11-0.16.0 httpcore-1.0.9 httptools-0.8.0 httpx-0.28.1 idna-3.19 iniconfig-2.3.0 isort-9.0.1 itsdangerous-2.2.0 jmespath-1.1.0 jq-1.12.0 librt-0.15.0 markdown-it-py-4.2.0 mccabe-0.7.0 mdurl-0.1.2 motor-3.7.1 multidict-6.7.1 mypy-2.3.1 mypy-extensions-1.1.0 numpy-2.5.2 oauthlib-3.3.1 packaging-26.3 pandas-3.0.5 passlib-1.7.4 pathspec-1.1.1 platformdirs-4.11.6 pluggy-1.6.0 propcache-0.5.2 pyasn1-0.4.8 pycodestyle-2.14.0 pycparser-3.0 pydantic-2.11.7 pydantic-core-2.33.2 pyflakes-3.4.0 pygments-2.21.0 pyjwt-2.13.0 pymongo-4.17.0 pytest-9.1.1 pytest-asyncio-1.4.0 pytest-xdist-3.8.0 python-dateutil-2.9.0.post0 python-dotenv-1.1.0 python-engineio-4.14.0 python-jose-3.4.0 python-multipart-0.0.32 python-socketio-5.16.4 pytokens-0.4.1 pyyaml-6.0.3 requests-2.34.2 requests-oauthlib-2.0.0 rich-15.0.0 rsa-4.9.1 s3transfer-0.19.2 shellingham-1.5.4 simple-websocket-1.1.0 six-1.17.0 starlette-0.46.2 typer-0.27.2 typing-extensions-4.16.0 typing-inspection-0.4.4 tzdata-2026.3 urllib3-2.7.0 uvicorn-0.34.2 uvloop-0.22.1 watchfiles-1.2.0 websocket-client-1.9.2 websockets-15.0.1 wsproto-1.3.2 yarl-1.24.5
+2026-09-01T06:43:56.644590829Z #12 23.12 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+2026-09-01T06:43:56.644612641Z #12 23.20 
+2026-09-01T06:43:56.644614873Z #12 23.20 [notice] A new release of pip is available: 25.0.1 -> 26.2.1
+2026-09-01T06:43:56.64461658Z #12 23.20 [notice] To update, run: pip install --upgrade pip
+2026-09-01T06:43:56.898041626Z #12 CANCELED
+2026-09-01T06:43:56.904409439Z ------
+2026-09-01T06:43:56.904419283Z  > [frontend-build 6/6] RUN yarn build:
+2026-09-01T06:43:56.904421669Z 0.974 src/components/dashboard/InstrumentTable.tsx(184,21): error TS6133: 'limitedRange' is declared but its value is never read.
+2026-09-01T06:43:56.904423455Z 0.974 src/pages/Dashboard.tsx(3,34): error TS6133: 'Home' is declared but its value is never read.
+2026-09-01T06:43:56.904424976Z 0.974 src/pages/Dashboard.tsx(3,48): error TS6133: 'Radar' is declared but its value is never read.
+2026-09-01T06:43:56.904426284Z 0.974 src/pages/Dashboard.tsx(3,55): error TS6133: 'Radio' is declared but its value is never read.
+2026-09-01T06:43:56.904427709Z 0.974 src/pages/Dashboard.tsx(3,62): error TS6133: 'TrendingDown' is declared but its value is never read.
+2026-09-01T06:43:56.904429012Z 0.974 src/pages/Dashboard.tsx(4,8): error TS6133: 'ApiKeysDialog' is declared but its value is never read.
+2026-09-01T06:43:56.904430395Z 0.974 src/pages/Dashboard.tsx(7,10): error TS6133: 'buttonVariants' is declared but its value is never read.
+2026-09-01T06:43:56.904431705Z 0.974 src/pages/Dashboard.tsx(54,10): error TS6133: 'clock' is declared but its value is never read.
+2026-09-01T06:43:56.904433095Z 1.004 error Command failed with exit code 1.
+2026-09-01T06:43:56.904440058Z 1.004 info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+2026-09-01T06:43:56.904441719Z ------
+2026-09-01T06:43:56.905016181Z Dockerfile:6
+2026-09-01T06:43:56.905018704Z --------------------
+2026-09-01T06:43:56.905020369Z    4 |     RUN corepack enable && yarn install --immutable
+2026-09-01T06:43:56.905022231Z    5 |     COPY frontend/ ./
+2026-09-01T06:43:56.905023542Z    6 | >>> RUN yarn build
+2026-09-01T06:43:56.905024805Z    7 |     
+2026-09-01T06:43:56.905026089Z    8 |     FROM python:3.12-slim
+2026-09-01T06:43:56.905027479Z --------------------
+2026-09-01T06:43:56.90502916Z error: failed to solve: process "/bin/sh -c yarn build" did not complete successfully: exit code: 1
