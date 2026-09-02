@@ -23,6 +23,8 @@ ADMIN_EMAIL="admin"
 ADMIN_PASSWORD="kunal"
 SECOND_ADMIN_EMAIL=""
 SECOND_ADMIN_PASSWORD=""
+SESSION_SECRET="use-a-long-random-production-secret"
+CREDENTIAL_ENCRYPTION_KEY="generate-a-fernet-key-and-store-it-as-a-secret"
 APP_URL="http://localhost:3000"
 COINDCX_API_KEY=""
 COINDCX_API_SECRET=""
@@ -32,6 +34,14 @@ COINDCX_WS_PRICE_CHANNEL="currentPrices@futures@rt"
 ```
 
 > Keep this file local. Do not commit it to git. The app loads it from the backend folder at startup and the credential values are stored in Mongo at runtime for rotation.
+
+Generate the encryption key once and store the same value in local `.env` and the deployment secret manager:
+
+```bash
+python3 -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+```
+
+Do not rotate `CREDENTIAL_ENCRYPTION_KEY` unless all stored credentials have been re-encrypted first; the old key is required to decrypt existing settings.
 
 ## Install and run locally
 
@@ -117,6 +127,8 @@ If the bot behaves incorrectly, stop it immediately using one of these actions:
 - [ ] API keys are rotated on a routine schedule
 - [ ] There is a documented emergency-stop procedure
 - [ ] Strategic risk parameters remain conservative at launch
+- [ ] `SESSION_SECRET` is configured with a long random value
+- [ ] `CREDENTIAL_ENCRYPTION_KEY` is configured and backed up securely
 
 ## Common operational issues
 

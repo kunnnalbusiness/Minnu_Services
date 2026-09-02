@@ -177,3 +177,13 @@ Start it again later with:
 Start it again later:
 
   sudo docker start scalping-mongo
+
+
+
+cd /workspaces/codespaces-blank/scalping-bot
+git init
+git checkout -b main
+git add .
+git commit -m "Initial commit on new pc"
+git remote add origin https://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@github.com/kunnnalbusiness/Minnu_Services.git
+git push -u origin main --force

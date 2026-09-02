@@ -12,7 +12,13 @@ services:
         value: scalping_bot
 
       - key: CORS_ORIGINS
-        value: "*"
+        sync: false
+
+      - key: SESSION_SECRET
+        generateValue: true
+
+      - key: CREDENTIAL_ENCRYPTION_KEY
+        sync: false
 
       - key: APP_URL
         sync: false
@@ -39,7 +45,7 @@ services:
         sync: false
 
       - key: SECOND_ADMIN_EMAIL
-        value: sayandip
+        value: VIP_ADMIN
 
       - key: SECOND_ADMIN_PASSWORD
         sync: false

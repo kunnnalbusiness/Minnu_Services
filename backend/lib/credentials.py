@@ -7,11 +7,11 @@ nothing stored. The secret is never returned to the client — only a masked tai
 
 from __future__ import annotations
 
-import os
 from contextvars import ContextVar
 from typing import Any
 
 from lib.db import db
+from lib.security import decrypt_secret, encrypt_secret
 
 _DOC_ID = "coindcx"
 _current_user: ContextVar[str] = ContextVar("coindcx_user", default="admin")
@@ -63,17 +63,21 @@ class CredentialsService:
         except Exception:
             doc = None
         if doc:
-            self._state().update(
-                api_key=doc.get("api_key") or "",
-                api_secret=doc.get("api_secret") or "",
-                live_trading=bool(doc.get("live_trading")),
-            )
+            try:
+                legacy_key = str(doc.get("api_key") or "")
+                legacy_secret = str(doc.get("api_secret") or "")
+                api_key = decrypt_secret(str(doc.get("api_key_enc") or "")) if doc.get("api_key_enc") else legacy_key
+                api_secret = decrypt_secret(str(doc.get("api_secret_enc") or "")) if doc.get("api_secret_enc") else legacy_secret
+                if legacy_key or legacy_secret:
+                    await self._database.settings.update_one(
+                        {"_id": self._settings_id()},
+                        {"$set": {"api_key_enc": encrypt_secret(api_key), "api_secret_enc": encrypt_secret(api_secret)}, "$unset": {"api_key": "", "api_secret": ""}},
+                    )
+            except RuntimeError:
+                api_key = api_secret = ""
+            self._state().update(api_key=api_key, api_secret=api_secret, live_trading=bool(doc.get("live_trading")))
         else:
-            self._state().update(
-                api_key=os.environ.get("COINDCX_API_KEY") or "",
-                api_secret=os.environ.get("COINDCX_API_SECRET") or "",
-                live_trading=False,
-            )
+            self._state().update(api_key="", api_secret="", live_trading=False)
         self._state()["loaded"] = True
 
     async def ensure_loaded(self) -> None:
@@ -87,8 +91,8 @@ class CredentialsService:
             {"_id": self._settings_id()},
             {
                 "$set": {
-                    "api_key": self._state()["api_key"],
-                    "api_secret": self._state()["api_secret"],
+                    "api_key_enc": encrypt_secret(self._state()["api_key"]),
+                    "api_secret_enc": encrypt_secret(self._state()["api_secret"]),
                 }
             },
             upsert=True,
@@ -96,11 +100,7 @@ class CredentialsService:
 
     async def clear(self) -> None:
         self._state().update(api_key="", api_secret="", live_trading=False)
-        await self._database.settings.update_one(
-            {"_id": self._settings_id()},
-            {"$set": {"api_key": "", "api_secret": "", "live_trading": False}},
-            upsert=True,
-        )
+        await self._database.settings.delete_one({"_id": self._settings_id()})
 
     async def set_live(self, on: bool) -> None:
         self._state()["live_trading"] = bool(on) and self.configured()

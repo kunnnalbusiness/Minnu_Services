@@ -353,18 +353,6 @@ export default function BotControl() {
         </section>
       </main>
 
-      <footer
-        data-testid="scanning-footer"
-        className={`num hidden h-9 shrink-0 items-center justify-between border-t px-4 text-[11px] md:flex ${isLightMode ? "border-[#dfeaf3] bg-[var(--card)] text-slate-600" : "border-[#1e293b] bg-[#090c11] text-slate-400"}`}
-      >
-        <span className="inline-flex items-center gap-2">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#00c076] animate-[beacon_1.6s_ease-in-out_infinite]" />
-          {botOn ? "Bot armed" : "Bot idle"}
-        </span>
-        <span className="text-slate-500">
-          {strategies.filter((s) => s.enabled).length} armed strategies
-        </span>
-      </footer>
     </div>
   );
 }

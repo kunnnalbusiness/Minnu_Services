@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import os
-import secrets
 from typing import Any
 
 from lib.db import db
+from lib.security import hash_password, verify_password
 
 ADMIN_EMAIL = (os.environ.get("ADMIN_EMAIL") or "").strip().lower()
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD") or ""
@@ -26,14 +26,19 @@ def configured_users() -> dict[str, dict[str, str]]:
 
 
 async def ensure_admin_user() -> dict[str, Any]:
-    payload = {**configured_users()[ADMIN_EMAIL], "active": True}
+    users = configured_users()
+    if not users:
+        return {}
     try:
-        await db.users.update_one({"email": ADMIN_EMAIL}, {"$set": payload}, upsert=True)
-        second = {**configured_users()[SECOND_ADMIN_EMAIL], "active": True}
-        await db.users.update_one({"email": SECOND_ADMIN_EMAIL}, {"$set": second}, upsert=True)
+        for email, user in users.items():
+            existing = await db.users.find_one({"email": email}, {"password": 1})
+            stored_password = str((existing or {}).get("password") or "")
+            password = stored_password if stored_password.startswith("scrypt$") else hash_password(user["password"])
+            payload = {"email": email, "password": password, "role": "admin", "active": True}
+            await db.users.update_one({"email": email}, {"$set": payload}, upsert=True)
     except Exception:
         pass
-    return payload
+    return {"email": ADMIN_EMAIL, "role": "admin", "active": True} if ADMIN_EMAIL in users else {}
 
 
 async def validate_admin_login(email: str, password: str) -> bool:
@@ -41,9 +46,7 @@ async def validate_admin_login(email: str, password: str) -> bool:
     normalized_password = (password or "").strip()
 
     configured = configured_users()
-    if normalized_email in configured and secrets.compare_digest(
-        normalized_password, configured[normalized_email]["password"]
-    ):
+    if normalized_email in configured and verify_password(normalized_password, configured[normalized_email]["password"]):
         await ensure_admin_user()
         return True
 
@@ -55,4 +58,10 @@ async def validate_admin_login(email: str, password: str) -> bool:
     if not user:
         return False
 
-    return str(user.get("email", "")).lower() == normalized_email and str(user.get("password", "")) == normalized_password
+    if str(user.get("email", "")).lower() != normalized_email:
+        return False
+    stored = str(user.get("password", ""))
+    valid = verify_password(normalized_password, stored)
+    if valid and not stored.startswith("scrypt$"):
+        await db.users.update_one({"email": normalized_email}, {"$set": {"password": hash_password(normalized_password)}})
+    return valid

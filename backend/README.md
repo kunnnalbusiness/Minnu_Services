@@ -189,6 +189,8 @@ CoinDCX credentials may be stored through the credentials API. Keep API keys rea
 
 Do not use `CORS_ORIGINS="*"` with credentialed sessions in production. Use an explicit frontend origin allowlist. Also ensure every `.env` line is valid `KEY=value` syntax.
 
+Generate `CREDENTIAL_ENCRYPTION_KEY` once with `python3 -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"` and keep the same value across restarts and deployments. Rotating it without re-encrypting existing settings makes saved CoinDCX credentials unreadable.
+
 ## Testing
 
 From this directory:
