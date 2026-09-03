@@ -7,15 +7,16 @@ export default function LogConsole({ logs, strategies }: { logs: LogEntry[]; str
   const logContainerRef = useRef<HTMLDivElement | null>(null);
   const endRef = useRef<HTMLDivElement | null>(null);
   const shouldFollowLive = useRef(true);
-  const previousScrollTop = useRef(0);
   const [selectedStrategy, setSelectedStrategy] = useState("all");
   const isLightMode = typeof document !== "undefined" && document.documentElement.dataset.theme === "light";
 
+  // Newest logs now render at the top, so "following live" means staying
+  // scrolled to the top of the list instead of the bottom.
   useEffect(() => {
     if (shouldFollowLive.current) {
       const container = logContainerRef.current;
       if (container) {
-        container.scrollTop = container.scrollHeight;
+        container.scrollTop = 0;
       }
     }
   }, [logs]);
@@ -122,8 +123,14 @@ export default function LogConsole({ logs, strategies }: { logs: LogEntry[]; str
     ? logs
     : logs.filter((log) => log.strategy_id === selectedStrategy);
 
+  // Render newest-first. A "cycle start" message is chronologically the
+  // earliest entry of its cycle, so in this newest-on-top ordering it ends
+  // up last within its group — the divider goes *after* it to separate that
+  // cycle from the older one below.
+  const orderedLogs = [...visibleLogs].reverse();
+
   return (
-    <div className={`mb-2 flex h-[clamp(320px,72vh,600px)] min-h-0 shrink-0 flex-col overflow-hidden rounded-xl border ${isLightMode ? "border-[#dfeaf3] bg-[var(--card)]" : "border-[#1e293b] bg-[#0d111a]"}`}>
+    <div className={`mb-2 flex h-[clamp(280px,62dvh,600px)] min-h-0 shrink-0 flex-col overflow-hidden rounded-xl border lg:h-full ${isLightMode ? "border-[#dfeaf3] bg-[var(--card)]" : "border-[#1e293b] bg-[#0d111a]"}`}>
       <div className={`flex items-center justify-between border-b px-2.5 py-1.5 sm:px-3 sm:py-2.5 ${isLightMode ? "border-[#dfeaf3]" : "border-[#1e293b]"}`}>
         <h2 className={`font-heading text-[11px] font-semibold sm:text-sm ${isLightMode ? "text-slate-900" : "text-slate-100"}`}>Live Log Console</h2>
         <span className="num text-[9px] text-slate-500 sm:text-[11px]" data-testid="log-count">
@@ -177,27 +184,21 @@ export default function LogConsole({ logs, strategies }: { logs: LogEntry[]; str
         ref={logContainerRef}
         onScroll={(event) => {
           const element = event.currentTarget;
-          const movedUp = element.scrollTop < previousScrollTop.current;
-          const atBottom = element.scrollHeight - element.scrollTop - element.clientHeight < 8;
-          if (movedUp) {
-            shouldFollowLive.current = false;
-          } else if (atBottom) {
-            shouldFollowLive.current = true;
-          }
-          previousScrollTop.current = element.scrollTop;
+          const nearTop = element.scrollTop < 8;
+          shouldFollowLive.current = nearTop;
         }}
         className="min-h-0 flex-1 overflow-y-auto px-3 py-2 font-mono"
         data-testid="log-console"
         aria-live="polite"
       >
-        {visibleLogs.length === 0 ? (
+        {orderedLogs.length === 0 ? (
           <p className="py-8 text-center text-xs text-slate-500" data-testid="log-empty-state">
             No events yet. Switch the bot on, or force-run a strategy to see signals here.
           </p>
         ) : (
           <div className="min-w-0">
-            {visibleLogs.map((log, index) => {
-              const showDivider = isCycleStart(log.message) && index > 0;
+            {orderedLogs.map((log, index) => {
+              const showDividerAfter = isCycleStart(log.message) && index < orderedLogs.length - 1;
               const lowerMessage = log.message.toLowerCase();
               const presentation = presentationFor(log);
               const isLossTrade = log.level === "trade" && (
@@ -208,10 +209,6 @@ export default function LogConsole({ logs, strategies }: { logs: LogEntry[]; str
               const messageClass = isLossTrade ? "text-[#ff455b]" : LEVEL_STYLE[log.level];
               return (
                 <Fragment key={log.id || index}>
-                  {showDivider && (
-                    <div className="my-3 h-[1px] w-full bg-slate-800/80" role="separator" />
-                  )}
-
                   <div
                     data-testid="log-line"
                     data-level={log.level}
@@ -256,6 +253,10 @@ export default function LogConsole({ logs, strategies }: { logs: LogEntry[]; str
                       ) : null}
                     </div>
                   </div>
+
+                  {showDividerAfter && (
+                    <div className="my-3 h-[1px] w-full bg-slate-800/80" role="separator" />
+                  )}
                 </Fragment>
               );
             })}
