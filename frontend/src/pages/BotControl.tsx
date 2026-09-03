@@ -338,7 +338,7 @@ export default function BotControl() {
         </div>
       ) : null}
 
-      <main className="grid min-h-0 flex-1 grid-cols-1 gap-2 overflow-y-auto p-2 lg:h-full lg:grid-cols-12 lg:gap-3 lg:overflow-hidden lg:p-3">
+      <main className="grid min-h-0 flex-1 grid-cols-1 gap-2 overflow-y-auto p-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] lg:h-full lg:grid-cols-12 lg:gap-3 lg:overflow-hidden lg:p-3">
         <section className="terminal-panel min-h-0 lg:col-span-4 lg:h-full">
           <StrategyList
             strategies={strategies}
