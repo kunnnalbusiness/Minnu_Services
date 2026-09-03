@@ -301,10 +301,19 @@ async def validate_live_credentials() -> dict[str, Any]:
     return summary
 
 
+def _normalize_dict_response(data: Any) -> dict[str, Any]:
+    """CoinDCX occasionally wraps a single object in a list."""
+    if isinstance(data, dict):
+        return data
+    if isinstance(data, list) and data and isinstance(data[0], dict):
+        return data[0]
+    return {}
+
+
 async def open_short(
     pair: str, quantity: Decimal, leverage: float, margin_currency_short_name: str = "INR"
 ) -> dict[str, Any]:
-    return await signed_post(
+    data = await signed_post(
         "/exchange/v1/derivatives/futures/orders/create",
         {
             "order": {
@@ -321,6 +330,7 @@ async def open_short(
             }
         },
     )
+    return _normalize_dict_response(data)
 
 
 async def place_market(
@@ -345,10 +355,11 @@ async def place_market(
     }
     if client_order_id:
         order["client_order_id"] = client_order_id
-    return await signed_post(
+    data = await signed_post(
         "/exchange/v1/derivatives/futures/orders/create",
         {"order": order},
     )
+    return _normalize_dict_response(data)
 
 
 async def place_limit(
@@ -375,10 +386,11 @@ async def place_limit(
     }
     if client_order_id:
         order["client_order_id"] = client_order_id
-    return await signed_post(
+    data = await signed_post(
         "/exchange/v1/derivatives/futures/orders/create",
         {"order": order},
     )
+    return _normalize_dict_response(data)
 
 
 async def order_status(order_id: str) -> dict[str, Any]:
